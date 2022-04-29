@@ -15,17 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\Main.cpp">
-      <Filter>Archivos de origen</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\OpenCVVideoPlayer.cpp">
-      <Filter>Archivos de origen</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\FfmpegVideoPlayer.cpp">
-      <Filter>Archivos de origen</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="Source\OpenCVVideoPlayer.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
@@ -35,5 +24,16 @@
     <ClInclude Include="Source\Timer.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="OpenCVVideoPlayer.cpp">
+      <Filter>Archivos de origen</Filter>
+    </ClCompile>
+    <ClCompile Include="FfmpegVideoPlayer.cpp">
+      <Filter>Archivos de origen</Filter>
+    </ClCompile>
+    <ClCompile Include="Main.cpp">
+      <Filter>Archivos de origen</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

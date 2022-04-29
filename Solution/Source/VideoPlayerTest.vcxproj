@@ -19,14 +19,14 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\FfmpegVideoPlayer.cpp" />
-    <ClCompile Include="Source\Main.cpp" />
-    <ClCompile Include="Source\OpenCVVideoPlayer.cpp" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="Source\FfmpegVideoPlayer.h" />
     <ClInclude Include="Source\OpenCVVideoPlayer.h" />
     <ClInclude Include="Source\Timer.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="FfmpegVideoPlayer.cpp" />
+    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="OpenCVVideoPlayer.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
@@ -92,7 +92,7 @@
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)\Build\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)\Build\$(Configuration)\</IntDir>
-    <IncludePath>$(ProjectDir)Source\External\SDL\include\$(IncludePath);$(ProjectDir)Source\External\Ffmpeg\include\$(IncludePath);$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)Source\External\SDL\include\$(IncludePath);$(SolutionDir)Source\External\Ffmpeg\include\$(IncludePath);$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -134,12 +134,12 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)Source\External\SDL\include\;$(ProjectDir)Source\External\SDL_image\include\;$(ProjectDir)Source\External\OpenCV\include\;$(ProjectDir)Source\External\SDL_mixer\include\;$(ProjectDir)Source\External\Ffmpeg\include\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Source\External\SDL\include\;$(SolutionDir)Source\External\SDL_image\include\;$(SolutionDir)Source\External\OpenCV\include\;$(SolutionDir)Source\External\SDL_mixer\include\;$(SolutionDir)Source\External\Ffmpeg\include\</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(ProjectDir)Source\External\SDL\libx64;$(ProjectDir)Source\External\SDL_image\libx64;$(ProjectDir)Source\External\SDL_mixer\libx64;$(ProjectDir)Source\External\OpenCV\lib\Debug;$(ProjectDir)Source\External\Ffmpeg\lib\</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)Source\External\SDL\libx64;$(SolutionDir)Source\External\SDL_image\libx64;$(SolutionDir)Source\External\SDL_mixer\libx64;$(SolutionDir)Source\External\OpenCV\lib\Debug;$(SolutionDir)Source\External\Ffmpeg\lib\</AdditionalLibraryDirectories>
       <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_mixer.lib;opencv_world455d.lib;avcodec.lib;avdevice.lib;avfilter.lib;avformat.lib;avutil.lib;postproc.lib;swresample.lib;swscale.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
