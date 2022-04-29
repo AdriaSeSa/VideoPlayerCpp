@@ -89,7 +89,7 @@
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)\Build\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)\Build\$(Configuration)\</IntDir>
-    <IncludePath>$(ProjectDir)Source\External\SDL\include\$(IncludePath);$(ProjectDir)Source\External\SDL_image\include\$(IncludePath);$(ProjectDir)Source\External\OpenCV\include\$(IncludePath);$(ProjectDir)Source\External\SDL_mixer\include\$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)Source\External\SDL\include\$(IncludePath);$(ProjectDir)Source\External\Ffmpeg\include\$(IncludePath);$(ProjectDir)Source\External\OpenCV\include\$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
