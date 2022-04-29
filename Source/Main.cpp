@@ -4,6 +4,7 @@
 #include "SDL.h"  
 
 #include <memory>
+#include <stdint.h>
 
 int main(int argc, char** argv)
 {
