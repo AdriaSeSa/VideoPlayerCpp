@@ -19,10 +19,12 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\FfmpegVideoPlayer.cpp" />
     <ClCompile Include="Source\Main.cpp" />
     <ClCompile Include="Source\OpenCVVideoPlayer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\FfmpegVideoPlayer.h" />
     <ClInclude Include="Source\OpenCVVideoPlayer.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
