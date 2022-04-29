@@ -114,6 +114,13 @@ AVFrame* FfmpegVideoPlayer::GetFrame()
 	return nullptr;
 }
 
+double FfmpegVideoPlayer::GetFPS()
+{
+	auto stream = avFormatCtx->streams[videoStreamIndex];
+	const double FPS = (double)stream->r_frame_rate.num / (double)stream->r_frame_rate.den;
+	return FPS;
+}
+
 void FfmpegVideoPlayer::CleanUp()
 {
 	av_packet_unref(avPacket);

@@ -13,6 +13,7 @@ public:
 	FfmpegVideoPlayer(const char* filename);
 	void CleanUp();
 	AVFrame* GetFrame();
+	double GetFPS();
 private:
 	bool LoadVideo(const char* filename);
 

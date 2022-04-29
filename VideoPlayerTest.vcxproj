@@ -26,6 +26,7 @@
   <ItemGroup>
     <ClInclude Include="Source\FfmpegVideoPlayer.h" />
     <ClInclude Include="Source\OpenCVVideoPlayer.h" />
+    <ClInclude Include="Source\Timer.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
