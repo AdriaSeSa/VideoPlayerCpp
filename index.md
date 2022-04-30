@@ -22,7 +22,7 @@ Of these two main issues, the second one is the only we can try to approach. Per
 
 Using Videos on videogames has been a common recurrent method to introduce a videogame narrative since a long time ago. An easy example of this is Final Fantasy VII's introduction, that had a 3 minute pre-rendered animation played at the beginning of the game to introduce us it's characters and location.
 
-<iframe src="https://www.youtube.com/watch?v=JujtlsiqZ-E" style="position:absolute;width:100%;height:100%;left:0" width="690" height="360" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+<iframe src="https://www.youtube.com/embed/JujtlsiqZ-" style="position:absolute;width:100%;height:100%;left:0" width="690" height="360" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
 
 Nowadays this method is used a lot less, since animating characters and using the in-game camera can be an easier way to achieve this. Even so, there are videogames that still use videos for cutscenes, introductions and endings, so it is not an obsolete tool. However it is true that, when speaking of cutscenes, videogames have ceased to use pre-rendered videos to create them, and instead are now using the engine to do it. Here are the main reasons why:
 
@@ -34,7 +34,7 @@ Third, reuse, always reuse. You can't reuse a cutscene to create another cutscen
 
 So, if using video insted of enginge cutscenes is just better, why would you still want to do it? Well, you certainly can avoid it, but video has a really important advantage still: it is limitless. You can create a video with any visual style. We can see a very clear example of this in the The Witcher 3 videogame's intro. In this intro, the art used for the video could not be used inside an engine because it does not share the same art style as the game. You could charge those sprites in your game to create the ctuscene inside the engine, but you would not use them again, so they would become a waste of storage. 
 
-<iframe src="https://www.youtube.com/watch?v=dd2gz6AxYoA" style="position:absolute;width:100%;height:100%;left:0" width="690" height="360" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+<iframe src="https://www.youtube.com/embed/dd2gz6AxYoA" style="position:absolute;width:100%;height:100%;left:0" width="690" height="360" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
 
 In conclusion, video is still a very optimal option if you want to create cutscene where you won't use elements of the gameplay, such as characters or locations, as used in-game. If that is not the case, you can always use an engine to run the cutscene in real time, and add inmersion to the player's experience.
 
