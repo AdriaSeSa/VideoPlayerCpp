@@ -34,6 +34,7 @@
     <ProjectGuid>{abc0c92f-37fc-4611-a70f-1634630ea6ce}</ProjectGuid>
     <RootNamespace>VideoPlayerTest</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>VideoPlayerSolution</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
