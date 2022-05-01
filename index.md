@@ -39,8 +39,231 @@ So, if using video insted of enginge cutscenes is just better, why would you sti
 In conclusion, video is still a very optimal option if you want to create cutscene where you won't use elements of the gameplay, such as characters or locations, as used in-game. If that is not the case, you can always use an engine to run the cutscene in real time, and add inmersion to the player's experience.
 
 
+## Selected Approach
 
+Now that we understand the pros and cons of using videos in videogames, let's get into HOW to do it. Keep in mind we can't use any engines like Unity or Unreal, and we are using C++. I'm a Windows user, so I will be doing it with Visual Studio 2019. Another condition is, if able, using SDL2 as well. This is because SDL2 is the standard library used for games created without an engine in my university, so being able to reproduce video inside an SDL2 window is necessary if I ever intend to use any of the code in a future project.
 
+Doing some research I've come to the conclusion I will, actually, make 2 approaches to solve this issue.
+
+In the first one, I will NOT use SDL2, and I will reproduce video using another rendering library named OpenCV.
+
+On the second one, I will use SDL2, and I will decodify the video data using FFmpeg's libraries avcodec and avformat.
+
+On the first approach, using OpenCV is the easiest way to go around this task. OpenCV is an open source library that is ready to reproduce video in an extreamly easy way. This library already has a decodifying feature to read video data, and so you don't need any extra libraries to do it.
+
+On the second approach, we fin ourselves with the problem that SDL2 has no way of reading video data. So, in order to render a video, we must use a decodifying library to read and decodify video data, and give that data to SDL2 to render. The library I choosed is Ffmpeg's libavcodec and libavformat. These are responsible of opening the video file, finding its components and frames, and storing that information in a way SDL2 can understand.
+
+### Using OpenCV
+
+Because OpenCV is ready to reproduce video already, this becomes a really easy task. I will not explain here how to set up a Visual Studio project with OpenCV libraries, because I think it's a little off topic, but I will leave some links on the References part in case you need some help with that.
+
+Once we have OpenCV in our project, we can start reproducing video right away. Just follow these steps:
+
+_Here is the code I used. If you are planning to make a serious application please consider modularize this code into parts first._
+
+1. Create a VideoCapture variable to store your video data
+
+```
+  VideoCapture cap("video.mp4");
+    // cap is the object of class video capture that tries to capture Bumpy.mp4
+    if (!cap.isOpened())  // isOpened() returns true if capturing has been initialized.
+    {
+        cout << "Cannot open the video file. \n";
+        return;
+    }
+```
+2. Get the video FPS
+```
+ double fps = cap.get(cv::CAP_PROP_FPS);
+```
+3. Create a window
+```
+ namedWindow("A_good_name", WINDOW_AUTOSIZE);
+```
+4. Inside your application loop, create a Mat variable (this is basically an image)
+```
+Mat frame;
+```
+5. Use your VideoCapture variable to read the frame information into your Mat variable
+```
+  if (!cap.read(frame)) // if not success, break loop
+        // read() decodes and captures the next frame.
+        {
+            cout << "\n Cannot read the video file. \n";
+            break;
+        }
+```
+6. Update your window with your Mat variable
+
+```
+ imshow("A_good_name", frame);
+```
+
+As simple as that! If you have your video file inside the right directory you should able to create a window that reproduces your video and closes after finishing.
+
+### Using Ffmpeg and SDL2
+
+To be able to reproduce video, we must find every frame inside the video we choose and render it into an SDL_Texture. This seems fairly simple, but getting a frame from a video is where the challenge is met. To see how to accomplish this, we must first understand how video data is stored. 
+
+Libavocdec and libavformat are libraries that help us to open and decode video information. But what does that mean? 
+
+All video data is encrypted, and in order to read it we must first decrypt it. Although these libraries do this exact task, they do not do it automatically, so we must understand (at least on a basic level) how video is encrypted. I will make an over-simplified verison step-to-step of this approach in order to explain both how video data is sotred and how to read it.
+
+1. First we have an AVFormatContext variable, which contains all the data on that video file.
+```
+avFormatCtx = avformat_alloc_context(); // Create Context
+	if (!avFormatCtx)
+	{
+		printf("Couldn't format context\n");
+		return 0;
+	}
+	if (avformat_open_input(&avFormatCtx, filename, NULL, NULL)) // fill context with video data
+	{
+		printf("Couldn't open video\n");
+		return 0;
+	}
+```
+2. Inside our AVFormatContext we can find multiple streams. Streams can have all sorts of information, but only one of them has the video data. We must find which one of those streams contains video data and store it.
+```
+for (int i = 0; i < avFormatCtx->nb_streams; i++)
+	{
+		auto stream = avFormatCtx->streams[i];
+		avCodecParams = avFormatCtx->streams[i]->codecpar;
+		avCodec = avcodec_find_decoder(avCodecParams->codec_id);
+
+		if (!avCodec) //  If there is no codec we look for the next stream. This should never happen on a normal video file.
+		{
+			continue;
+		}
+
+		if (avCodecParams->codec_type == AVMediaType::AVMEDIA_TYPE_VIDEO) // If this is the video stream, we save its index
+		{
+			videoStreamIndex = i;
+			break;
+		}
+	}
+```
+3. Once we have our video stream, we must create a Codec and CodecContext variable to store the stream codification and decrypt it. 
+```
+	avCodecCtx = avcodec_alloc_context3(avCodec); // Allocate an avCodecContext to store params data
+	if (!avCodecCtx)
+	{
+		printf("Couldn't create AvCodecContext\n");
+		return false;
+	}
+
+	// Set AvCodecContext parameters 
+	if (avcodec_parameters_to_context(avCodecCtx, avCodecParams) < 0)
+	{
+		printf("Couldn't initialize AvCodecContext\n");
+		return false;
+	}
+	// Open Codec
+	if (avcodec_open2(avCodecCtx, avCodec, NULL) < 0)
+	{
+		printf("Couldn't open codec\n");
+		return false;
+	}
+```
+
+4. With the video stream data decrypted, we must find our frames. It's our lucky day, because Ffmpeg has a way to tell which frames we have already read, so we won't have to pay attention to that. 
+
+5. To find those frames, we must learn about Packets. These are small pieces of data that the AVFormatContext contains. We must find those that are related with the video stream, and read them looking for a frame.
+
+```
+while (av_read_frame(avFormatCtx, avPacket) >= 0)
+	{
+		// If this is not the video stream, we skip this packet
+		if (avPacket->stream_index != videoStreamIndex)
+		{
+			continue;
+		}
+		// Check for every possible error on this step
+		result = avcodec_send_packet(avCodecCtx, avPacket);
+		if (result < 0)
+		{
+			printf("Faild to decode packet\n");
+			return 0;
+		}
+		result = avcodec_receive_frame(avCodecCtx, avFrame);
+		if (result == AVERROR(EAGAIN) || result == AVERROR_EOF) // If this frame has already been decoded or it is the end of the file
+		{
+			continue;
+		}
+		else if (result < 0)
+		{
+			printf("Faild to decode packet\n");
+			return 0;
+		}
+
+		// If no error is given on this point, we successfully recieved a frame
+		return avFrame;
+	}
+```
+
+6. If we find a frame, we can store it to render it later (and stop looking for more frames).
+
+Steps 1 to 4 must be done once per video, and steps 5 and 6 once per frame.
+
+Now, before getting to SDL2 and how to render our frame (remember for now we only accomplished to get the frame data), lets look a little bit deeper into how this data encryption works.
+
+As you have read, there are many data structures inside a video that contain important data. The ones we are paying more attention to are:
+1. Our Video Context, which contains all data
+2. Our Video Stream, which contains all video related data
+3. Packets, that can contain frame data
+4. Frames, that contain the actual frame data we are looking for.
+
+The Video Context conatins all the data, and it can be accessed to get the streams and packets. Check the [AVFormatContext](https://ffmpeg.org/doxygen/trunk/structAVFormatContext.html) API for more information.
+
+The video [Streams](https://ffmpeg.org/doxygen/trunk/structAVStream.html#details) contain the data of specific parts of the video. It could be video, audio or metadata like subtitles. 
+
+[Packets](https://ffmpeg.org/doxygen/trunk/structAVPacket.html) are similar to streams, but in a smaller scale. They can contains almost any kind of data, and some of them conatin one or multiple frames.
+
+Lastly, [frames](https://ffmpeg.org/doxygen/trunk/structAVFrame.html), contain the raw video information. We are mainly interested in the color and size data, but they contain many more information. There is a very important feature about frames inside video, and that is they are not stored as RGB, but as YUV.
+
+So, now that we understand what data we are getting, let's render those frames.
+
+As I wrote before, Frames are stored using YUV data instead of RGB. This is not a problem for us, because SDL2 contains a function we can use to update an already existing texture with YUV data. This is just perfect, because it allows us to create an empty texture and fill it with data any time we need it.
+
+The process is as simple as:
+1. Create an empty texture, and create an empty SDL_Rect which size is the video size (we will use this rect to render our texture). The texture must be set with the correct flags in order to edit it using YUV data.
+```
+SDL_Texture* sdlTexture = SDL_CreateTexture(sdlRenderer,
+		SDL_PIXELFORMAT_IYUV,
+		SDL_TEXTUREACCESS_STREAMING,
+		videoFrame->width,
+		videoFrame->height
+	);
+	// Texture rect, same size as video
+	SDL_Rect sdlRect;
+	sdlRect.x = 0;
+	sdlRect.y = 0;
+	sdlRect.w = videoFrame->width;
+	sdlRect.h = videoFrame->height;
+	}
+```
+2. Get the AVFrame variable from the code created before, and update our texture with YUV information.
+```
+// Update our texture with video Frame YUV data
+		SDL_UpdateYUVTexture(sdlTexture, &sdlRect,
+			videoFrame->data[0], videoFrame->linesize[0],
+			videoFrame->data[1], videoFrame->linesize[1],
+			videoFrame->data[2], videoFrame->linesize[2]
+		);
+```
+3. Render the texture using usual SDL2 code.
+```
+// Update renderer
+		SDL_RenderClear(sdlRenderer);
+		SDL_RenderCopy(sdlRenderer, sdlTexture, NULL, NULL);
+		SDL_RenderPresent(sdlRenderer);
+```
+4. Extra Step! Make sure to have a way to control how often you call for the next frame. You should be calling for the next frame at the same ratio as the original video frame rate. Fortunally, we can get the video FPS pretty easily. We will have to acces our video stream first. 
+```
+const double FPS = (double)stream->r_frame_rate.num / (double)stream->r_frame_rate.den;
+```
+
+If everything has been done correctly, this should be enoguh to charge, read, decrypt, and render a frame using FFmpeg and SDL2!
 
 ## Welcome to GitHub Pages
 
