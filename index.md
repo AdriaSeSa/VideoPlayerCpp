@@ -272,3 +272,63 @@ Creating a Video Player is a hard task, and the approches I have explained are f
 The OpenCV approach is fairly simple, and can only be improved in a defined context. If you were to use this approach, you should try to break it down to controllable steps. Also, it has no option for multiple windows.
 
 The Ffmpeg and SDL2 approach has many flaws. First, it has no audio, so you should look into how to reproduce audio using SDL's audio library SDL_Mixer, and see how to use the audio stream data with said library. Also, this is a fairly tasking code for your game performance. In my Visual Studio code only reproducing a 10 second video costed almost 100 MB of RAM. Using an already existing library to decode the video most likely made the performance better, but it is still a problem. Finally, we can't reproduce more than one video simultaneously using the given code. It could be transformed into multiple textures getting data from multiple frames.
+
+## Examples
+
+I have created one code example for both approaches, adn they are available inside the github [repository](https://github.com/AdriaSeSa/VideoPlayerCpp) linked to this page.
+
+*WARNING: To use these examples you have to download [this](https://drive.google.com/drive/folders/1ssyBmUIr7sRFqAvcQhOaHOrgnxvEmQAu?usp=sharing) .dll file and place it inside the Game folder. This is a dynamic library for debugging OpenCV. It gets corrputed once unploaded with github for some reason I don't understand, so you have to download it manually.*
+
+You can either check the Exercices folder, where I created a step-to-step exercice to write the code for both approaches, or the Solution folder, where you can find the completed code.
+
+In both templates I created the same structure. There are two classes, one for each approach, with the code necessary to reproduce video inside them. You can either call one or the other inside main.cpp. These are:
+
+* OpenCVVideoPlayer
+* FfmpegVideoPlayer
+
+*OpenCVVideoPlayer*
+
+Here the strcuture is fairly simple. The constructor to this class containts all the code necesarry for loading and rendering the video you choose. Of course, this is just a sample code. You would want to separate the while loop for rendering the video into another function. 
+
+*FfmpegVideoPlayer*
+
+Inside this class the strcuture is:
+* Constructor that calls LoadVIdeo() with a given file name
+* LoadVideo() that load the AVFormatContext, AVCodecParameters, AVCodec and AVCodecCOntext variables, as well as getting the video stream index.
+* GetFrame() that iterates through our video data to get the next frame.
+* GetFPS() that calculates the video FPS.
+* CleanUp() to free all allocated memory.
+
+On main.cpp we can se a simple example on how to use this class correctly using SDL2. You basically need a renderer and a texture. Inside your application loop, update that texture with the YUV information inside the frame given by GetFrame(). When frame equals a nullptr, the video has ended (or an error has occured), and you can proceed as you want (in my case I just end the application).
+
+## Exercises explanation
+
+Now I will give a detailed explanation of every TODO written inside both approach's exercises.
+
+### OpenCV approach
+
+You can check the OpenCV API [here](https://docs.opencv.org/4.5.5/) in case you feel lost.
+
+*TODO 1*
+First we need our [VideoCapture](https://docs.opencv.org/4.5.5/d8/dfe/classcv_1_1VideoCapture.html) variable. This is a variable to store video data. Initialize it with the desired file name to reproduce.
+
+*TODO 2*
+For every step we make we need to make sure we are not makin a mistake. Create an if statement that used the class function isOpened() of our VideoCapture variable to see if we correctly opened the video. If not, you probably wrote the file name incorrectly, or the video is corrputed.
+
+*TODO 3*
+We need the Frames Per Second ratio to reproduce the video correctly. We can get this from our VideoCapture variable. Use the function .get() and fill it with cv::CAP_PROP_FPS.
+
+*TODO 4*
+Now we have to display our video. To do that, OpenCV has a class named [Mat](https://docs.opencv.org/4.x/d3/d63/classcv_1_1Mat.html), that stores image data and can be given to the window directly. Create a Mat Variable.
+
+*TODO 5*
+Now we have to store our video data inside the Mat variable. To do so, use the class function .read() inside our VideoCapture variable and fill it with our new Mat variable. This function returns a boolean. Check if it returns false and finish the process if so.
+
+*TODO 6*
+Lastly, we need to update our window with the new data stored in our Mat variable. Use imshow(windowName, Matvariable) to do this. imshow() is a function from the highui library inside OpenCV.
+
+Now, if you are calling this class constructor inside main, and you have commented the FFmpeg part of the code, you should see your video reproduce when you compile.
+
+### Ffmpeg approach
+
+You can check the Ffmpeg API [here] in case you feel lost.
