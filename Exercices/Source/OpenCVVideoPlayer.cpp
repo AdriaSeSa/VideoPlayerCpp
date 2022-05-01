@@ -37,7 +37,7 @@ OpenCVVideoPlayer::OpenCVVideoPlayer()
         // Mat object is a basic image container. frame is an object of Mat.
 
         // TODO 5 OCV: Fill the next if statement with VideoCapture.read(Mat), using the variables you made for your VideoCapture and Mat
-        /*if (VideoCapture.read(Mat)) // if not success, break loop
+        /*if (!VideoCapture.read(Mat)) // if not success, break loop
         {
             cout << "\n Cannot read the video file. \n";
             break;
