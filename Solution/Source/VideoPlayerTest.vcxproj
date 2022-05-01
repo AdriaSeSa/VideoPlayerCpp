@@ -97,6 +97,9 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(SolutionDir)\Build\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)\Build\$(Configuration)\</IntDir>
+    <IncludePath>$(SolutionDir)Source\External\SDL\include\$(IncludePath);$(SolutionDir)Source\External\Ffmpeg\include\$(IncludePath);$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -152,12 +155,14 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)Source\External\SDL\include\;$(SolutionDir)Source\External\SDL_image\include\;$(SolutionDir)Source\External\OpenCV\include\;$(SolutionDir)Source\External\SDL_mixer\include\;$(SolutionDir)Source\External\Ffmpeg\include\</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)Source\External\SDL\libx64;$(SolutionDir)Source\External\SDL_image\libx64;$(SolutionDir)Source\External\SDL_mixer\libx64;$(SolutionDir)Source\External\OpenCV\lib\Release;$(SolutionDir)Source\External\Ffmpeg\lib\</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
