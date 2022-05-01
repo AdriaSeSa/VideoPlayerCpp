@@ -277,7 +277,7 @@ The Ffmpeg and SDL2 approach has many flaws. First, it has no audio, so you shou
 
 I have created one code example for both approaches, adn they are available inside the github [repository](https://github.com/AdriaSeSa/VideoPlayerCpp) linked to this page.
 
-*WARNING: To use these examples you have to download [this](https://drive.google.com/drive/folders/1ssyBmUIr7sRFqAvcQhOaHOrgnxvEmQAu?usp=sharing) .dll file and place it inside the Game folder. This is a dynamic library for debugging OpenCV. It gets corrputed once unploaded with github for some reason I don't understand, so you have to download it manually.*
+**WARNING: To use these examples you have to download [this](https://drive.google.com/drive/folders/1ssyBmUIr7sRFqAvcQhOaHOrgnxvEmQAu?usp=sharing) .dll file and place it inside the Game folder. This is a dynamic library for debugging OpenCV. It gets corrputed if uploaded with github for some reason I don't understand, so you have to download it manually.**
 
 You can either check the Exercices folder, where I created a step-to-step exercice to write the code for both approaches, or the Solution folder, where you can find the completed code.
 
@@ -286,11 +286,11 @@ In both templates I created the same structure. There are two classes, one for e
 * OpenCVVideoPlayer
 * FfmpegVideoPlayer
 
-*OpenCVVideoPlayer*
+**OpenCVVideoPlayer**
 
 Here the strcuture is fairly simple. The constructor to this class containts all the code necesarry for loading and rendering the video you choose. Of course, this is just a sample code. You would want to separate the while loop for rendering the video into another function. 
 
-*FfmpegVideoPlayer*
+**FfmpegVideoPlayer**
 
 Inside this class the strcuture is:
 * Constructor that calls LoadVIdeo() with a given file name
@@ -309,26 +309,94 @@ Now I will give a detailed explanation of every TODO written inside both approac
 
 You can check the OpenCV API [here](https://docs.opencv.org/4.5.5/) in case you feel lost.
 
-*TODO 1*
+**TODO 1**
 First we need our [VideoCapture](https://docs.opencv.org/4.5.5/d8/dfe/classcv_1_1VideoCapture.html) variable. This is a variable to store video data. Initialize it with the desired file name to reproduce.
 
-*TODO 2*
+**TODO 2**
 For every step we make we need to make sure we are not makin a mistake. Create an if statement that used the class function isOpened() of our VideoCapture variable to see if we correctly opened the video. If not, you probably wrote the file name incorrectly, or the video is corrputed.
 
-*TODO 3*
+**TODO 3**
 We need the Frames Per Second ratio to reproduce the video correctly. We can get this from our VideoCapture variable. Use the function .get() and fill it with cv::CAP_PROP_FPS.
 
-*TODO 4*
+**TODO 4**
 Now we have to display our video. To do that, OpenCV has a class named [Mat](https://docs.opencv.org/4.x/d3/d63/classcv_1_1Mat.html), that stores image data and can be given to the window directly. Create a Mat Variable.
 
-*TODO 5*
+**TODO 5**
 Now we have to store our video data inside the Mat variable. To do so, use the class function .read() inside our VideoCapture variable and fill it with our new Mat variable. This function returns a boolean. Check if it returns false and finish the process if so.
 
-*TODO 6*
+**TODO 6**
 Lastly, we need to update our window with the new data stored in our Mat variable. Use imshow(windowName, Matvariable) to do this. imshow() is a function from the highui library inside OpenCV.
 
 Now, if you are calling this class constructor inside main, and you have commented the FFmpeg part of the code, you should see your video reproduce when you compile.
 
 ### Ffmpeg approach
 
-You can check the Ffmpeg API [here] in case you feel lost.
+You can check the Ffmpeg API [here](http://www.ffmpeg.org/documentation.html) in case you feel lost.
+
+**TODO 1**
+First we need to allocate the necessary memory for our AVFormatContext variable. To do this, use the avformat_alloc_context() function and assign its result to the already declared variable named avFormatCtx. This variable is declared at the header file of this class.
+
+**TODO 2**
+Now we need to find our video stream. To do so, we must iterate over each stream inside our AvFormatContext variable. You will get the number of streams with the nb_streams variable inside our AvFormatContext variable, and you can get the streams data on an array named streams inside the AvFormatCOntext as well.
+Once we have a for loop, we must get the stream data inside a variable to check it later. Store the current iteration stream data inside an auto variable using "auto stream = avFormatCtx->streams[i]"
+
+**TODO 3**
+Now we need to see if the stream we are currently iterating on is a video stream. We can check that using the Parameters inside the current stream. Assign the avCodecParams variable to our format context variable's codecpar.
+Then assign our avCodec variable to the result of avcodec_find_decoder(avCodecParams->codec_id). We will use this later on.
+
+**TODO 4**
+Once we have an avCodec we need to see if it is actually filled with data. This tells us if there has been an error inside this stream. So, check if the avCodec variable is false. If it is, you should stop the process.
+After that we need to see if our stream is a VIDEO stream. To see this, use the avCodecParams->codec_type variable and compare it to AVMediaType::AVMEDIA_TYPE_VIDEO.
+If it returns true, assign the current iteration to our videoStreamIndex variable. We will use this in the future to access this stream.
+
+**TODO 5**
+You don't have to wirte the following code, just understanding what it does is enough. 
+Here we are assigning the memory of the avCodeCtx variable (check header file)  and using the avCodecParams variable to fill it with the codified data. Afterwards, we open the Codified data into the avCodecCtx using the Codec we got in our previous for loop. On summary, we are using the parameters(avCodecParams) to fill the CodecContext(avCodecCtx), and we are using the Codec(avCodec) to interpret these parameters. Remember the reason we are doing this is because all data is Codified, an we must Decodifiy it before being able to use it
+
+**TODO 6**
+Now we have to get the frames. First we must iterate thorugh every packet inside our AvFormatContext variable, and see if it is related to the video stream we found at TODO 4. For starters, fill the while loop with the following check: "av_read_frame(avFormatCtx, avPacket) >= 0". If this returns false, it means there is no packets with frames left.
+
+**TODO 7**
+Once we know we are inside a video stream packet, we need to see if it contains any frames. We will use the avcodec_send_packet(avCodecCtx, avPacket) to see if our packet is valid first. If not, stop the process.
+Then, we need to use avcodec_receive_frame(avCodecCtx, avFrame) to see if the packet contains any frames. This function can give us the following outputs:
+* It returns AVERROR(EAGAIN), which indicates this frame has already been decoded.
+* It returns AVERROR_EOF, which indicates this is the end of the file.
+* It returns an integer minor than 0, which indicates an error ocurred.
+
+If we get AVERROR(EAGAIN) or AVERROR_EOF, we use the keyword "continue" to go to the next frame (in case this one was already read) or end the process returning an empty frame (in case this was the end of the file).
+If we get another error, we just stop the process.
+
+**TODO 8**
+Finally, we can render our frame. using the GetFrame() function we can now get the frame information and use it inside our SDL_Texture. Inside main.cpp there is already a texture prepared. We just have to use the SDL_UpdateYUVTexture() function to fill it with our frame data. The parameters should be:
+* sdlTexture
+* &sdlRect (check previous lines of code, this is just an SDL_Rect same size as the video)
+* Y data
+* Y linesize
+* U data
+* U linesize
+* V data
+* V linesize
+To access Y, U and V data use videoFrame->data[0], videoFrame->data[1] and videoFrame->data[2] respectively.
+To access Y, Y and V linesize use videoFrame->linesize[0], videoFrame->linesize[1] and, videoFrame->linesize[2] respectively.	 
+
+If everything has been done correctly, and you have the OpenCV constructor call commented, you should be now seeing your video reproducing when compiling the code. 
+
+## References
+
+https://www.youtube.com/watch?v=W6Yx3injNZs&list=PL3tTRNNl2htmYsuodk4ycATQV84K63OPH&index=43&t=710s This has been my main reference! Thanks a lot to Bartholomew for this video, it was very illustrative.
+
+https://www.youtube.com/watch?v=qMNr1Su-nR8&t=399s
+
+https://programming.vip/docs/video-player-based-on-ffmpeg-and-sdl-sdl-video-display.html
+
+https://joanvaliente.github.io/Video-Player-Research/
+
+https://programmerclick.com/article/99852034665/
+
+https://www.gamedev.net/forums/topic/348340-play-video-files-in-sdl/
+
+https://stackoverflow.com/questions/13669346/libavcodec-get-video-duration-and-framerate
+
+https://stackoverflow.com/questions/31116781/playing-a-video-file-in-opencv-c
+
+https://discourse.libsdl.org/t/how-to-play-video-in-sdl2-0-1/20206
