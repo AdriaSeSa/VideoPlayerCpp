@@ -275,7 +275,7 @@ The Ffmpeg and SDL2 approach has many flaws. First, it has no audio, so you shou
 
 ## Examples
 
-I have created one code example for both approaches, adn they are available inside the github [repository](https://github.com/AdriaSeSa/VideoPlayerCpp) linked to this page.
+I have created one code example for both approaches, and they are available inside the github [repository](https://github.com/AdriaSeSa/VideoPlayerCpp) linked to this page.
 
 **WARNING: To use these examples you have to download [this](https://drive.google.com/drive/folders/1ssyBmUIr7sRFqAvcQhOaHOrgnxvEmQAu?usp=sharing) .dll file and place it inside the Game folder. This is a dynamic library for debugging OpenCV. It gets corrputed if uploaded with github for some reason I don't understand, so you have to download it manually.**
 
