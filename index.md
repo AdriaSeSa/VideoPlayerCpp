@@ -32,26 +32,26 @@ Second, there is not a noticable change of quality. This makes reference to two 
 
 Third, reuse, always reuse. You can't reuse a cutscene to create another cutscene. But you can use the same elements you have in your engine to create multiple cutscenes. It is just more efficient.
 
-So, if using video insted of enginge cutscenes is just better, why would you still want to do it? Well, you certainly can avoid it, but video has a really important advantage still: it is limitless. You can create a video with any visual style. We can see a very clear example of this in the The Witcher 3 videogame's intro. In this intro, the art used for the video could not be used inside an engine because it does not share the same art style as the game. You could charge those sprites in your game to create the ctuscene inside the engine, but you would not use them again, so they would become a waste of storage. 
+So, if using video insted of engine cutscenes is just better, why would you still want to do it? Well, you certainly can avoid it, but video has a really important advantage still: it is limitless. You can create a video with any visual style. We can see a very clear example of this in the The Witcher 3's intro. In this intro, the art used for the video could not be used inside an engine because it does not share the same art style as the game. You could charge those sprites in your game to create the ctuscene inside the engine, but you would not use them again, so they would become a waste of storage. 
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/dd2gz6AxYoA" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
-In conclusion, video is still a very optimal option if you want to create cutscene where you won't use elements of the gameplay, such as characters or locations, as used in-game. If that is not the case, you can always use an engine to run the cutscene in real time, and add inmersion to the player's experience.
+In summary, video is still a very optimal option if you want to create cutscene where you won't use elements of the gameplay, such as characters or locations, as used in-game. If that is not the case, you can always use an engine to run the cutscene in real time, and add inmersion to the player's experience.
 
 
 ## Selected Approach
 
 Now that we understand the pros and cons of using videos in videogames, let's get into HOW to do it. Keep in mind we can't use any engines like Unity or Unreal, and we are using C++. I'm a Windows user, so I will be doing it with Visual Studio 2019. Another condition is, if able, using SDL2 as well. This is because SDL2 is the standard library used for games created without an engine in my university, so being able to reproduce video inside an SDL2 window is necessary if I ever intend to use any of the code in a future project.
 
-Doing some research I've come to the conclusion I will, actually, make 2 approaches to solve this issue.
+Doing some research I've discovered two ways of solving this issue.
 
-In the first one, I will NOT use SDL2, and I will reproduce video using another rendering library named OpenCV.
+On the first one, I will NOT use SDL2, and I will reproduce video using another rendering library named OpenCV.
 
 On the second one, I will use SDL2, and I will decodify the video data using FFmpeg's libraries avcodec and avformat.
 
 On the first approach, using OpenCV is the easiest way to go around this task. OpenCV is an open source library that is ready to reproduce video in an extreamly easy way. This library already has a decodifying feature to read video data, and so you don't need any extra libraries to do it.
 
-On the second approach, we fin ourselves with the problem that SDL2 has no way of reading video data. So, in order to render a video, we must use a decodifying library to read and decodify video data, and give that data to SDL2 to render. The library I choosed is Ffmpeg's libavcodec and libavformat. These are responsible of opening the video file, finding its components and frames, and storing that information in a way SDL2 can understand.
+On the second approach, we find ourselves with the problem that SDL2 has no way of reading video data. So, in order to render a video, we must use a decodifying library to read and decodify video data, and give that data to SDL2 to render. The library I choosed is Ffmpeg's libavcodec and libavformat. These are responsible of opening the video file, finding its components and frames, and storing that information in a way SDL2 can understand.
 
 ### Using OpenCV
 
@@ -59,7 +59,7 @@ Because OpenCV is ready to reproduce video already, this becomes a really easy t
 
 Once we have OpenCV in our project, we can start reproducing video right away. Just follow these steps:
 
-_Here is the code I used. If you are planning to make a serious application please consider modularize this code into parts first._
+_Here is the code I used. If you are planning to make a serious application please consider to modularize this code into parts first._
 
 1. Create a VideoCapture variable to store your video data
 
@@ -107,7 +107,7 @@ To be able to reproduce video, we must find every frame inside the video we choo
 
 Libavocdec and libavformat are libraries that help us to open and decode video information. But what does that mean? 
 
-All video data is encrypted, and in order to read it we must first decrypt it. Although these libraries do this exact task, they do not do it automatically, so we must understand (at least on a basic level) how video is encrypted. I will make an over-simplified verison step-to-step of this approach in order to explain both how video data is sotred and how to read it.
+All video data is encrypted, and in order to read it we must first decrypt it. Although these libraries do this exact task, they do not do it automatically, so we must understand (at least on a basic level) how video is encrypted. I will make an over-simplified verison step-to-step of this approach in order to explain both how video data is stored and how to read it.
 
 1. First we have an AVFormatContext variable, which contains all the data on that video file.
 ```
@@ -201,9 +201,9 @@ while (av_read_frame(avFormatCtx, avPacket) >= 0)
 	}
 ```
 
-6. If we find a frame, we can store it to render it later (and stop looking for more frames).
+If we find a frame, we can store it to render it later (and stop looking for more frames).
 
-Steps 1 to 4 must be done once per video, and steps 5 and 6 once per frame.
+Steps 1 to 4 must be done once per video, and step once per frame.
 
 Now, before getting to SDL2 and how to render our frame (remember for now we only accomplished to get the frame data), lets look a little bit deeper into how this data encryption works.
 
@@ -258,47 +258,17 @@ SDL_Texture* sdlTexture = SDL_CreateTexture(sdlRenderer,
 		SDL_RenderCopy(sdlRenderer, sdlTexture, NULL, NULL);
 		SDL_RenderPresent(sdlRenderer);
 ```
-4. Extra Step! Make sure to have a way to control how often you call for the next frame. You should be calling for the next frame at the same ratio as the original video frame rate. Fortunally, we can get the video FPS pretty easily. We will have to acces our video stream first. 
+4. Extra Step! Make sure to have a way to control how often you call for the next frame. You should be calling for the next frame at the same ratio as the original video frame rate. Fortunately, we can get the video FPS pretty easily. We will have to acces our video stream first. 
 ```
 const double FPS = (double)stream->r_frame_rate.num / (double)stream->r_frame_rate.den;
 ```
 
-If everything has been done correctly, this should be enoguh to charge, read, decrypt, and render a frame using FFmpeg and SDL2!
+If everything has been done correctly, this should be enough to charge, read, decrypt, and render a frame using FFmpeg and SDL2!
 
-## Welcome to GitHub Pages
+## Possible Improvements
 
-You can use the [editor on GitHub](https://github.com/AdriaSeSa/VideoPlayerCpp/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
+Creating a Video Player is a hard task, and the approches I have explained are far form perfect. 
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+The OpenCV approach is fairly simple, and can only be improved in a defined context. If you were to use this approach, you should try to break it down to controllable steps. Also, it has no option for multiple windows.
 
-### Markdown
-
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
-
-```markdown
-Syntax highlighted code block
-
-# Header 1
-## Header 2
-### Header 3
-
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
-```
-
-For more details see [Basic writing and formatting syntax](https://docs.github.com/en/github/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax).
-
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/AdriaSeSa/VideoPlayerCpp/settings/pages). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
+The Ffmpeg and SDL2 approach has many flaws. First, it has no audio, so you should look into how to reproduce audio using SDL's audio library SDL_Mixer, and see how to use the audio stream data with said library. Also, this is a fairly tasking code for your game performance. In my Visual Studio code only reproducing a 10 second video costed almost 100 MB of RAM. Using an already existing library to decode the video most likely made the performance better, but it is still a problem. Finally, we can't reproduce more than one video simultaneously using the given code. It could be transformed into multiple textures getting data from multiple frames.
