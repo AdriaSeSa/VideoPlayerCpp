@@ -13,14 +13,14 @@ Aside from the code, I'll also have a small essay about Video Players in videoga
 5. Exercises explanation
 6. References
 
-Making a Video Player is a hard task, and if you are a beginner programmer this may be a bit challenging for you (it was plenty of a challenge for me at least). I will try to explain what is the problem we are trying to explain, before starting the project's first chapter.
+Making a Video Player is a hard task, and if you are a beginner programmer this may be a bit challenging for you (it was plenty of a challenge for me at least). I will try to explain what is the problem we are trying to solve, before starting the project's first chapter.
 
 The main issue with creating a Video Player in videogames it's that it requires to decodify information on an already demanding context (video games are really demanding for the computer). So decodifying a video can affect our performance. On the other hand, decodifying a video is not an easy task. There are many ways a video can be codified, and it can be stored in a lot of formats (.mp4, .wav, .avi ...), which makes the task a lot harder. 
 Of these two main issues, the second one is the only we can try to approach. Performance can hardly be improved.
 
 ## Market Study
 
-Using Videos on videogames has been a common recurrent method to introduce a videogame narrative since a long time ago. An easy example of this is Final Fantasy VII's introduction, that had a 3 minute pre-rendered animation played at the beginning of the game to introduce us it's characters and location.
+Using Videos on videogames has been a common method to introduce a videogame's narrative. An easy example of this is Final Fantasy VII's introduction, that had a 3 minute pre-rendered animation played at the beginning of the game to introduce us it's characters and location.
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/JujtlsiqZ-E" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
