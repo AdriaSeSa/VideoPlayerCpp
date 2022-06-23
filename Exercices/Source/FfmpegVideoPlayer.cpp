@@ -86,11 +86,8 @@ bool FfmpegVideoPlayer::LoadVideo(const char* filename)
 		printf("Couldn't open codec\n");
 		return false;
 	}
-	return true;
-}
 
-AVFrame* FfmpegVideoPlayer::GetFrame()
-{
+	// Allocate memory for the frame and packet variables. They will be used in the GetFrame() function.
 	avFrame = av_frame_alloc();
 	if (!avFrame)
 	{
@@ -99,6 +96,11 @@ AVFrame* FfmpegVideoPlayer::GetFrame()
 	}
 	avPacket = av_packet_alloc();
 
+	return true;
+}
+
+AVFrame* FfmpegVideoPlayer::GetFrame()
+{
 	// TODO 6 FFMPEG: Now that our video is been loaded and decodified, we must read its frames.
 	// To do this, first we have to iterate through every packet into our AVFormatContext and find the ones inside our VIDEO stream
 	// Fill the following while loop checking if av_read_frame(avFormatCtx, avPacket) is greater or equal to 0.

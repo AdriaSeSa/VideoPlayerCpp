@@ -68,11 +68,8 @@ bool FfmpegVideoPlayer::LoadVideo(const char* filename)
 		printf("Couldn't open codec\n");
 		return false;
 	}
-	return true;
-}
 
-AVFrame* FfmpegVideoPlayer::GetFrame()
-{
+	// Allocate memory for the frame and packet variables. They will be used in the GetFrame() function.
 	avFrame = av_frame_alloc();
 	if (!avFrame)
 	{
@@ -80,7 +77,11 @@ AVFrame* FfmpegVideoPlayer::GetFrame()
 		return 0;
 	}
 	avPacket = av_packet_alloc();
+	return true;
+}
 
+AVFrame* FfmpegVideoPlayer::GetFrame()
+{
 	int result;
 	// We loop until we are out of packets or find a video packet 
 	while (av_read_frame(avFormatCtx, avPacket) >= 0)
